@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixtureTests", "FixtureTests\FixtureTests.csproj", "{61CA130B-07A1-4598-BBF4-87779EE8514B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelFixtureTests", "ParallelFixtureTests\ParallelFixtureTests.csproj", "{E4F0470A-D75A-468B-B5A8-E4B33EFC3DCB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A62CA4DD-043E-4C81-8F0D-826735030824}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61CA130B-07A1-4598-BBF4-87779EE8514B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61CA130B-07A1-4598-BBF4-87779EE8514B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61CA130B-07A1-4598-BBF4-87779EE8514B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61CA130B-07A1-4598-BBF4-87779EE8514B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4F0470A-D75A-468B-B5A8-E4B33EFC3DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4F0470A-D75A-468B-B5A8-E4B33EFC3DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4F0470A-D75A-468B-B5A8-E4B33EFC3DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4F0470A-D75A-468B-B5A8-E4B33EFC3DCB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {31D81A48-1331-488D-B526-B12CF78C7BD7}
+	EndGlobalSection
+EndGlobal
