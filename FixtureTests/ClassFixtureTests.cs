@@ -4,36 +4,43 @@ using Xunit;
 
 namespace FixtureTests
 {
-    public class ExecucaoParalela : IDisposable
-    {
-        public string marcador;
-        public int testeAtual;
-
-        //Constutor que será usado para criar um contexto compartilhado entre todos os testes da classe que o usa como ClassFixture
-        public ExecucaoParalela()
-        {
-            this.testeAtual++;
-            this.marcador = $"Devo aparecer apenas uma vez";
-            Debug.WriteLine(marcador);
-        }
-
-        public void Dispose()
-        {
-            this.marcador = "Disposed";
-        }
-    }
-    //ClassFixture determina qual classe será usada pra ser a 'Initialize' para outra classe de teste.
+    //ClassFixture determina qual classe será usada pra ser um 'Initialize' para outra classe de teste.
     //Dessa forma, o construtor da classe passada para o IClassFixture<> será executado apenas uma vez,
     //criando um contexto específico para aquela classe de teste.
     //Importante: Usar IClassFixture<> determina que o contexto será compartilhado com apenas uma classe, ou seja,
     //o construtor da classe usada como Fixture será executado uma vez antes da classe de teste em si ser instanciada. O construtor da propria 
     //classe de teste sempre será chamado antes da execução de cada teste como é feito por default.
-    //Warning! Se usarmos a classe de teste para herdar de IClassFixture passando a propria classe ( MyTestClass : IClassFixture<MyTestClass>), 
+    //Warning1! Se usar a mesma classe como ClassFixture para duas ou mais classes de teste, o construtor da classe passada será executado
+    //a quantidade de vezes equivalente a quantidade de classes que o herdam *SIMULTANEAMENTE*. Serão enviadas qtdClass Threads para seu construtor.
+    //Warning2! Se usarmos a classe de teste para herdar de IClassFixture passando a propria classe ( MyTestClass : IClassFixture<MyTestClass>), 
     //seu construtor será executado duas vezes antes do primerio teste ser executado e, por default, uma vez antes de cada teste.
-    public class Executando1 : IClassFixture<ExecucaoParalela>
+    public class ExecucaoSequencial : IDisposable
     {
-        public ExecucaoParalela exeParalela;
-        public Executando1(ExecucaoParalela exeParalela)
+        public string marcador;
+
+        //Constutor que será usado para criar um contexto compartilhado entre todos os testes da classe que o usa como ClassFixture
+        //Como duas classes usam a mesma ClasseFixture, este construtor receberá duas threads, uma de cada classe
+        public ExecucaoSequencial()
+        {
+            this.marcador = "Construtor da ExecuçãoSequencial chamado. Devo ser chamado apenas uma vez por cada classe que me herda";
+            Debug.WriteLine(marcador);
+        }
+
+        public void Dispose()
+        {
+            this.marcador = "Fim da execução da ExecuçãoSequencial";
+        }
+    }
+
+    public class ExecutandoClassFixture1 : IClassFixture<ExecucaoSequencial>
+    {
+        public ExecucaoSequencial exeParalela;
+
+        //Se for necessário usar alguma propriedade da classe de contexto é possível passa-la como parâmetro no construtor
+        //da sub classe, uma instancia será fornecida automagicamente e, é claro, a mesma instância é passada para todas
+        //as classes que a usam como parâmetro no construtor, ou seja, seu estado será compartilhada. 
+        //Por isso é *um contexto para toda a execução* =D
+        public ExecutandoClassFixture1(ExecucaoSequencial exeParalela)
         {
             this.exeParalela = exeParalela;
         }
@@ -41,32 +48,29 @@ namespace FixtureTests
         [Fact]
         public void Teste1()
         {
-            exeParalela.testeAtual++;
-            exeParalela.marcador = "Chamando teste 1";
+            exeParalela.marcador = "ExecutandoClassFixture1 teste 1";
             Debug.WriteLine(exeParalela.marcador);
         }
 
         [Fact]
         public void Teste2()
         {
-            exeParalela.testeAtual++;
-            exeParalela.marcador = "Chamando teste 2";
+            exeParalela.marcador = "ExecutandoClassFixture1 teste 2";
             Debug.WriteLine(exeParalela.marcador);
         }
 
         [Fact]
         public void Teste3()
         {
-            exeParalela.testeAtual++;
-            exeParalela.marcador = "Chamando teste 3";
+            exeParalela.marcador = "ExecutandoClassFixture1 teste 3";
             Debug.WriteLine(exeParalela.marcador);
         }
     }
 
-    public class Executando2 : IClassFixture<ExecucaoParalela>
+    public class ExecutandoClassFixture2 : IClassFixture<ExecucaoSequencial>
     {
-        ExecucaoParalela exeParalela;
-        public Executando2(ExecucaoParalela exeParalela)
+        ExecucaoSequencial exeParalela;
+        public ExecutandoClassFixture2(ExecucaoSequencial exeParalela)
         {
             this.exeParalela = exeParalela;
         }
@@ -74,25 +78,72 @@ namespace FixtureTests
         [Fact]
         public void Teste4()
         {
-            exeParalela.testeAtual++;
-            exeParalela.marcador = "Chamando teste 4";
+            exeParalela.marcador = "ExecutandoClassFixture2 teste 4";
             Debug.WriteLine(exeParalela.marcador);
         }
 
         [Fact]
         public void Teste5()
         {
-            exeParalela.testeAtual++;
-            exeParalela.marcador = "Chamando teste 5";
+            exeParalela.marcador = "ExecutandoClassFixture2 teste 5";
             Debug.WriteLine(exeParalela.marcador);
         }
 
         [Fact]
         public void Teste6()
         {
-            exeParalela.testeAtual++;
-            exeParalela.marcador = "Chamando teste 6";
+            exeParalela.marcador = "ExecutandoClassFixture2 teste 6";
             Debug.WriteLine(exeParalela.marcador);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public class CriandoContextoParaUmaClasse
+    {
+        public string variavelCompatilhadaPeloContexto;
+        public CriandoContextoParaUmaClasse()
+        {
+            this.variavelCompatilhadaPeloContexto = "Criando o contexto";
+        }
+    }
+
+    public class UsandoContextoExclusivamente : IClassFixture<CriandoContextoParaUmaClasse>
+    {
+        CriandoContextoParaUmaClasse contexto;
+        public UsandoContextoExclusivamente(CriandoContextoParaUmaClasse contexto)
+        {
+            //Obtendo o contexto criado
+            this.contexto = contexto;
+
+        }
+
+        [Fact]
+        public void ContextoFoiCompartilhado()
+        {
+            string valorInicialDaVariavelDoContexto = "Criando o contexto";
+
+            Assert.Equal(valorInicialDaVariavelDoContexto, contexto.variavelCompatilhadaPeloContexto);
+        }
+
+        [Fact]
+        public void ContextoCompartilhadoFoiAlteradoEmAlgumTesteAnterior()
+        {
+            string valorInicialDaVariavelDoContexto = "Criando o contexto";
+
+            Assert.NotEqual(valorInicialDaVariavelDoContexto, contexto.variavelCompatilhadaPeloContexto);
+        }
+
+        [Fact]
+        public void AlterandoContexto()
+        {
+            string novoValorAhSerPassadoPelaVariavelDoContexto = "Alterando o valor da variavel de contexto";
+
+            contexto.variavelCompatilhadaPeloContexto = novoValorAhSerPassadoPelaVariavelDoContexto;
+            bool variavelDeContextoFoiAlterada = contexto.variavelCompatilhadaPeloContexto != "Criando o contexto" &&
+                                                 !string.IsNullOrWhiteSpace(contexto.variavelCompatilhadaPeloContexto);
+
+            Assert.True(variavelDeContextoFoiAlterada);
         }
     }
 }

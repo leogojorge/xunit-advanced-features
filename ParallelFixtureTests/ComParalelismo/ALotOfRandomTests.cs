@@ -6,16 +6,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-[assembly: CollectionBehavior(MaxParallelThreads = 2)]
+[assembly: CollectionBehavior(MaxParallelThreads = 6)]
+//Esta decoração seta a quantidade maxima de threads que será usada para executar os testes.
+//Por default o valor dela é igual a quantidade de cores virtuais que o processador da sua máquina possui. Que significa
+//a potência máxima para execução
 namespace ParallelFixtureTests.ComParalelismo
 {
-    //6 classes de teste diferentes, ou seja, 6 collections diferentes
+    //9 classes de teste diferentes, ou seja, 9 collections diferentes
     public class RandomTests
     {
         [Fact]
         public void RandomTest1()
         {
-            Thread.Sleep(1000);
+            Task.Delay(1000).GetAwaiter();
         }
     }
     public class OtherTest
@@ -23,7 +26,7 @@ namespace ParallelFixtureTests.ComParalelismo
         [Fact]
         public void RandomTest2()
         {
-            Thread.Sleep(1000);
+            Task.Delay(1000).GetAwaiter();
         }
     }
     public class AnotherOneTest
@@ -31,7 +34,7 @@ namespace ParallelFixtureTests.ComParalelismo
         [Fact]
         public void RandomTest3()
         {
-            Thread.Sleep(1000);
+            Task.Delay(1000).GetAwaiter();
         }
     }
     public class MoreRandomTest
