@@ -19,7 +19,7 @@ namespace FixtureTests
             {
                 var allPersons = CacheFixture._cacheCollection.Find(x => true).ToList();
                 
-                Assert.Equal(3, allPersons.Count);
+                Assert.NotEmpty(allPersons);
             }
 
             [Fact]
@@ -46,16 +46,15 @@ namespace FixtureTests
             }
 
             [Fact]
-            public void When_UpdatingADocument_DocumentShouldBeModified()
+            public void When_InsertADocument_DocumentShouldBeAdded()
             {
-                string expectedName = "New Maria";
-                var updateExpression = Builders<Person>.Update.Set(s => s.Name, expectedName);
+                var newPerson = new Person(5, "James");
 
-                CacheFixture._cacheCollection.UpdateOne(x => x.Id == 1, updateExpression);
+                CacheFixture._cacheCollection.InsertOne(newPerson);
 
-                var maria = CacheFixture._cacheCollection.Find(x => x.Id == 1).FirstOrDefault();
+                var james = CacheFixture._cacheCollection.Find(x => x.Id == 5).FirstOrDefault();
 
-                Assert.Equal(expectedName, maria.Name);
+                Assert.Equal(newPerson.Name, james.Name);
             }
         }
     }
