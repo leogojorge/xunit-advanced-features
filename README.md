@@ -1,8 +1,15 @@
-## O que?
-Precisamos registar os mapeamentos do AutoMapper e as injeções de dependência ao inicializar os testes, por exemplo. 
+## What
 
-## Problema
-Inicializa-los no construtor da classe causa exception, pois o construtor é chamado antes de cada teste e não é possível fazer multiplos registros.
+This is a repository which code was created to be used as an exemple of how we can use Fixture of xUnit. 
 
-## Solução
-Usar as funcionalidades de criação de contexto e processamento sequencial vs paralelo do xUnit (Fixtures).
+There is this article explaining how the technology works and how to use it.
+
+## How to run
+
+This project contains only test project, so can only be executed with `dotnet test` command on cmd.
+The tests are using a connection with MongoDB on port 27017, so you need to have docker running on your machine.
+
+Execute on your command line:
+```
+docker run -p 27017:27017 -d mongo:latest
+```

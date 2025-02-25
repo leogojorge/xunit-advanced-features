@@ -1,50 +1,61 @@
-﻿namespace FixtureTests
+﻿using MongoDB.Driver;
+
+namespace FixtureTests
 {
     public class CacheTests
     {
-        public class FlagCacheTests : IClassFixture<CacheFixture>
+        [Collection("CacheDatabase")]
+        public class PersonCacheTests
         {
-            public CacheFixture CacheFixture { get; set; }
+            public CacheDatabaseFixture CacheFixture { get; set; }
 
-            public FlagCacheTests(CacheFixture cacheFixture)
+            public PersonCacheTests(CacheDatabaseFixture cacheFixture)
             {
                 this.CacheFixture = cacheFixture;
             }
 
             [Fact]
-            public void TestFlags()
+            public void GetAllPersons()
             {
-                Assert.True(this.CacheFixture.Cache["id_1"]);
-                Assert.True(this.CacheFixture.Cache["id_2"]);
-                Assert.False(this.CacheFixture.Cache["id_3"]);
+                var allPersons = CacheFixture._cacheCollection.Find(x => true).ToList();
+                
+                Assert.Equal(3, allPersons.Count);
+            }
+
+            [Fact]
+            public void GetPersonById()
+            {
+                var person1 = CacheFixture._cacheCollection.Find(x => x.Id == 1).FirstOrDefault();
+                var person2 = CacheFixture._cacheCollection.Find(x => x.Id == 2).FirstOrDefault();
+                var person3 = CacheFixture._cacheCollection.Find(x => x.Id == 3).FirstOrDefault();
+
+                Assert.Equal("Maria", person1.Name);
+                Assert.Equal("Leonardo", person2.Name);
+                Assert.Equal("Ana", person3.Name);
             }
         }
 
-        public class CacheInitializationTests : IClassFixture<CacheFixture>
+        [Collection("CacheDatabase")]
+        public class PersonCacheUpdateTests
         {
-            public CacheFixture CacheFixture { get; set; }
+            public CacheDatabaseFixture CacheFixture { get; set; }
 
-            public CacheInitializationTests(CacheFixture cacheFixture)
+            public PersonCacheUpdateTests(CacheDatabaseFixture cacheFixture)
             {
                 this.CacheFixture = cacheFixture;
             }
 
             [Fact]
-            public void TestCacheElements()
+            public void When_UpdatingADocument_DocumentShouldBeModified()
             {
-                Assert.Equal(3, this.CacheFixture.Cache.Count);
-                Assert.Equal(3, this.CacheFixture.Cache.Where(x => x.Key.StartsWith("id_")).Count());
-            }
-        }
+                string expectedName = "New Maria";
+                var updateExpression = Builders<Person>.Update.Set(s => s.Name, expectedName);
 
-        public class OtherCacheTests : IClassFixture<CacheFixture>
-        {
-            [Fact]
-            public void TestCacheElements()
-            {
-                //other tests that do not need the cache instance, but
-                //belongs to the same fixture
-                //Assert... 
+                CacheFixture._cacheCollection.UpdateOne(x => x.Id == 1, updateExpression);
+
+                var maria = CacheFixture._cacheCollection.Find(x => x.Id == 1).FirstOrDefault();
+
+                Assert.Equal(expectedName, maria.Name);
             }
         }
     }

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using Xunit;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FixtureTests
+namespace ParallelFixtureTests
 {
     //ClassFixture determina qual classe será usada pra ser um 'Initialize' para outra classe de teste.
     //Dessa forma, o construtor da classe passada para o IClassFixture<> será executado apenas uma vez,
@@ -123,7 +126,7 @@ namespace FixtureTests
         {
             string valorInicialDaVariavelDoContexto = "Criando o contexto";
 
-            Assert.Equal(valorInicialDaVariavelDoContexto, contexto.variavelCompatilhadaPeloContexto);
+            Assert.NotEqual(valorInicialDaVariavelDoContexto, contexto.variavelCompatilhadaPeloContexto);
         }
 
         [Fact]

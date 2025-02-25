@@ -25,7 +25,6 @@
         //code needed. 
     }
 
-
     [CollectionDefinition("AnotherCollection")]
     public class CollectionFixtureWithConsntructor : IClassFixture<ClassInitialzeAObjectFixture>
     {

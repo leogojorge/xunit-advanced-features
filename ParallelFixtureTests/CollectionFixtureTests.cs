@@ -6,7 +6,7 @@ using Xunit;
 //Esta decoração determina que cada classe é uma coleção dentro deste assembly, ou seja, as destge assembly classes são executadas em paralel (configuração defoult do xUnit).
 //[assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
 //Esta decoração determina que cada assembly é uma coleção, ou seja, não importa quantos metodos exista dentro dele, serão todos executados sequencialmente
-namespace FixtureTests
+namespace ParallelFixtureTests
 {
     //Definindo o nome do Collection (contexto) que será compartilhado por várias classes diferentes
     [CollectionDefinition("Main")]
@@ -34,7 +34,7 @@ namespace FixtureTests
     public class CallingCollectionMain
     {
         MainCollection exeParalela;
-        
+
         //Passando a classe de contexto como parâmetro para usar suas propriedades. Instância é fornecida automagicamente pelo xUnit
         public CallingCollectionMain(MainCollection exeParalela)
         {
@@ -71,7 +71,7 @@ namespace FixtureTests
     public class CallingCollectionMainAgain
     {
         MainCollection exeParalela;
-        
+
         //Passando a classe de contexto como parâmetro para usar suas propriedades. Instância é fornecida automagicamente pelo xUnit
         public CallingCollectionMainAgain(MainCollection exeParalela)
         {
