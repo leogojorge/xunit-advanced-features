@@ -15,7 +15,7 @@ namespace FixtureTests
             }
 
             [Fact]
-            public void GetByNameMaria_ShouldReturnDocumentWithMariaFromCollection()
+            public void GetPersonByName()
             {
                 string expectedPersonName = "Maria";
                 var filter = Builders<Person>.Filter.Eq(x => x.Name, expectedPersonName);
