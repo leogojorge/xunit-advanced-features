@@ -15,11 +15,14 @@ namespace FixtureTests
             }
 
             [Fact]
-            public void GetAllPersons()
+            public void GetByNameMaria_ShouldReturnDocumentWithMariaFromCollection()
             {
-                var allPersons = CacheFixture._cacheCollection.Find(x => true).ToList();
+                string expectedPersonName = "Maria";
+                var filter = Builders<Person>.Filter.Eq(x => x.Name, expectedPersonName);
+
+                var person = CacheFixture._cacheCollection.Find(filter).ToList().FirstOrDefault();
                 
-                Assert.NotEmpty(allPersons);
+                Assert.Equal(expectedPersonName, person!.Name);
             }
 
             [Fact]
@@ -46,15 +49,15 @@ namespace FixtureTests
             }
 
             [Fact]
-            public void When_InsertADocument_DocumentShouldBeAdded()
+            public void When_InsertingADocument_DocumentShouldBeAdded()
             {
-                var newPerson = new Person(5, "James");
+                int expectedTotalQuantityOfDocuments = 4;
+                Person brian = new Person(4, "Brian");
+                CacheFixture._cacheCollection.InsertOne(brian);
 
-                CacheFixture._cacheCollection.InsertOne(newPerson);
+                var allPersons = CacheFixture._cacheCollection.Find(x => true).ToList();
 
-                var james = CacheFixture._cacheCollection.Find(x => x.Id == 5).FirstOrDefault();
-
-                Assert.Equal(newPerson.Name, james.Name);
+                Assert.Equal(expectedTotalQuantityOfDocuments, allPersons.Count);
             }
         }
     }
