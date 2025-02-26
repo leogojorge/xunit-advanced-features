@@ -6,9 +6,9 @@ There is [this article](https://medium.com/@leogjorge/xunit-advanced-features-fi
 
 ## How to run
 
-This project contains only a test project, so it can only be executed running dotnet test on the command line.
+This project contains only a test project, so it can only be executed running `dotnet test` on the command line.
 The tests are using a connection with MongoDB on port 27017, so you need to have Docker running on your machine.
 
-To set up the MongoDB container, run docker run -p 27017:27017 -d mongo:latest on your command line.
+To set up the MongoDB container, run `docker run -p 27017:27017 -d mongo:latest` on your command line.
 
-Then go to the path where the solution is stored and run dotnet test.
+Then go to the path where the solution is stored and run `dotnet test`.
